@@ -15,7 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class TileEntityPrinter extends TileEntityFurniture implements ISidedInventory, ITickable
 {
@@ -30,7 +31,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
 
     public TileEntityPrinter()
     {
-        super("printer", 3);
+        super("printer", 4);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
 
         boolean flag1 = false;
 
-        if(this.isPrinting())
+        if(this.isPrinting() && this.canPrint() && this.printingTime > 0)
         {
             --this.printerPrintTime;
         }
@@ -74,9 +75,10 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
         if(!this.isPrinting() && (getStackInSlot(1).isEmpty() || getStackInSlot(0).isEmpty()))
         {
             if(!this.isPrinting() && this.printingTime > 0)
-            {
-                this.printingTime = MathHelper.clamp(this.printingTime - 2, 0, this.totalCookTime);
-            }
+                if (getStackInSlot(2).isEmpty()){//When ink out, print Waste
+                    this.printingTime = 0;
+                    setInventorySlotContents(2, new ItemStack(Items.COAL));
+                }
         }
         else
         {
@@ -84,6 +86,9 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
             {
                 this.currentItemPrintTime = this.printerPrintTime = getItemPrintTime(getStackInSlot(1));
                 this.totalCookTime = this.getPrintTime(getStackInSlot(0));
+                if (printingTime==0) {//Consume 1 book
+                    getStackInSlot(3).shrink(1);
+                }
 
                 if(this.isPrinting())
                 {
@@ -103,23 +108,28 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
 
             if(this.isPrinting() && this.canPrint())
             {
-                ++this.printingTime;
-
+                    ++this.printingTime;
+                    this.totalCookTime = this.getPrintTime(getStackInSlot(0));
                 if(!flag)
                 {
                     TileEntityUtil.markBlockForUpdate(world, pos);
                 }
 
-                if(this.printingTime == this.totalCookTime)
+                if(this.printingTime >= this.totalCookTime)
                 {
                     this.printingTime = 0;
                     this.printItem();
+                    --this.printerPrintTime;//Consume 1 ink
                     flag1 = true;
                 }
             }
             else
             {
                 this.printingTime = 0;
+                if(!(getStackInSlot(3).isEmpty())&&(getStackInSlot(2).isEmpty())) {//Let it broken?
+                    getStackInSlot(3).shrink(1);
+                    setInventorySlotContents(2, new ItemStack(Items.COAL));
+                }
             }
         }
 
@@ -145,7 +155,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
 
     private boolean canPrint()
     {
-        if(getStackInSlot(0).isEmpty())
+        if(getStackInSlot(0).isEmpty() && getStackInSlot(1).isEmpty())
         {
             return false;
         }
@@ -177,6 +187,15 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
             if(i == FurnitureItems.INK_CARTRIDGE) return 5000;
         }
         return 0;
+    }
+    public static boolean isBookPop(ItemStack stack)
+    {
+        if(stack == null)
+        {
+            return false;
+        }
+        if(ArrayUtils.contains(OreDictionary.getOreIDs(stack),OreDictionary.getOreID("book"))) return true;
+        return stack.getItem() == Items.BOOK;
     }
 
     public static boolean isItemFuel(ItemStack stack)

@@ -1,0 +1,22 @@
+{
+    "result": {
+        "item": "cfm:tv"
+    },
+    "pattern": [
+        "LLL",
+        "LGL",
+        "LRL"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "G": {
+            "item": "minecraft:glass_pane"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "L": {
+            "item": "minecraft:iron_ingot"
+        }
+    }
+}

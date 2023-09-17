@@ -4,12 +4,16 @@ import com.mrcrayfish.furniture.api.RecipeAPI;
 import com.mrcrayfish.furniture.api.RecipeData;
 import com.mrcrayfish.furniture.gui.slots.SlotPrinter;
 import com.mrcrayfish.furniture.gui.slots.SlotPrinterInput;
+import com.mrcrayfish.furniture.gui.slots.SlotPrinterPaperSup;
 import com.mrcrayfish.furniture.tileentity.TileEntityPrinter;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class ContainerPrinter extends Container
 {
@@ -18,9 +22,10 @@ public class ContainerPrinter extends Container
     public ContainerPrinter(IInventory playerInventory, IInventory printerInventory)
     {
         this.printerInventory = printerInventory;
-        this.addSlotToContainer(new SlotPrinterInput(printerInventory, 0, 80, 5));
+        this.addSlotToContainer(new SlotPrinterInput(printerInventory, 0, 105, 30));
         this.addSlotToContainer(new Slot(printerInventory, 1, 55, 30));
         this.addSlotToContainer(new SlotPrinter(printerInventory, 2, 80, 61));
+        this.addSlotToContainer(new Slot(printerInventory, 3, 80, 5));//consume book
 
         for(int i = 0; i < 3; i++)
         {
@@ -55,14 +60,14 @@ public class ContainerPrinter extends Container
 
             if(slotNum == 2)
             {
-                if(!this.mergeItemStack(item, 3, 39, true))
+                if(!this.mergeItemStack(item, 4, 40, true))
                 {
                     return ItemStack.EMPTY;
                 }
 
                 slot.onSlotChange(item, itemCopy);
             }
-            else if(slotNum != 1 && slotNum != 0)
+            else if(slotNum != 1 && slotNum != 0 && slotNum != 3)
             {
                 RecipeData data = RecipeAPI.getPrinterRecipeFromInput(new ItemStack(itemCopy.getItem()));
                 if(data != null)
@@ -79,19 +84,26 @@ public class ContainerPrinter extends Container
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(slotNum >= 3 && slotNum < 30)
+                else if(TileEntityPrinter.isBookPop(item))
+                {
+                    if(!this.mergeItemStack(item, 3, 4, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if(slotNum >= 4 && slotNum < 30)
                 {
                     if(!this.mergeItemStack(item, 30, 39, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(slotNum >= 30 && slotNum < 39 && !this.mergeItemStack(item, 3, 30, false))
+                else if(slotNum >= 30 && slotNum < 39 && !this.mergeItemStack(item, 4, 30, false))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(!this.mergeItemStack(item, 3, 39, false))
+            else if(!this.mergeItemStack(item, 4, 40, false))
             {
                 return ItemStack.EMPTY;
             }

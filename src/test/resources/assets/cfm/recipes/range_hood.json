@@ -1,0 +1,19 @@
+{
+    "result": {
+        "item": "cfm:range_hood"
+    },
+    "pattern": [
+        " I ",
+        " I ",
+        "ISI"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "S": {
+            "item": "minecraft:sea_lantern"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    }
+}
