@@ -34,6 +34,8 @@ item.item_crow_bar.name=撬棍
 item.item_log.name=原木条
 item.tv_remote.name=电视遥控器
 
+item.item_wasted_book.name=废书
+
 tile.table_oak.name=橡木桌
 tile.table_spruce.name=云杉木桌
 tile.table_birch.name=白桦木桌

@@ -40,5 +40,7 @@ public class CategoryItems extends AbstractCategory
         add(FurnitureItems.TV_REMOTE);
         add(FurnitureItems.CROWBAR);
         add(FurnitureItems.LOG);
+
+        add(FurnitureItems.WASTED_BOOK);
     }
 }

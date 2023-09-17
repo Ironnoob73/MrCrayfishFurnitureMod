@@ -77,7 +77,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
             if(!this.isPrinting() && this.printingTime > 0)
                 if (getStackInSlot(2).isEmpty()){//When ink out, print Waste
                     this.printingTime = 0;
-                    setInventorySlotContents(2, new ItemStack(Items.COAL));
+                    setInventorySlotContents(2, new ItemStack(FurnitureItems.WASTED_BOOK));
                 }
         }
         else
@@ -128,7 +128,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
                 this.printingTime = 0;
                 if(!(getStackInSlot(3).isEmpty())&&(getStackInSlot(2).isEmpty())) {//Let it broken?
                     getStackInSlot(3).shrink(1);
-                    setInventorySlotContents(2, new ItemStack(Items.COAL));
+                    setInventorySlotContents(2, new ItemStack(FurnitureItems.WASTED_BOOK));
                 }
             }
         }

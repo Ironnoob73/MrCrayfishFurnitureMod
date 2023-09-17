@@ -59,6 +59,11 @@ public class FurnitureItems
     public static final Item CRAYFISH;
     public static final Item CEILING_FAN_FANS;
 
+    /**
+     * Hail Patch
+     */
+    public static final Item WASTED_BOOK;
+
     static
     {
         COOL_PACK = new ItemGeneric().setUnlocalizedName("item_cool_pack").setRegistryName("item_cool_pack");
@@ -89,6 +94,8 @@ public class FurnitureItems
         CROWBAR = new Item().setUnlocalizedName("item_crow_bar").setRegistryName("item_crow_bar").setCreativeTab(MrCrayfishFurnitureMod.tabFurniture);
         CEILING_FAN_FANS = new Item().setUnlocalizedName("ceiling_fan_fans").setRegistryName("ceiling_fan_fans");
         TV_REMOTE = new ItemTVRemote();
+
+        WASTED_BOOK = new ItemGeneric().setUnlocalizedName("item_wasted_book").setRegistryName("item_wasted_book");
     }
 
     public static void register()
@@ -121,6 +128,8 @@ public class FurnitureItems
         registerItem(CROWBAR);
         registerItem(CEILING_FAN_FANS);
         registerItem(TV_REMOTE);
+
+        registerItem(WASTED_BOOK);
     }
 
     private static void registerItem(Item item)
