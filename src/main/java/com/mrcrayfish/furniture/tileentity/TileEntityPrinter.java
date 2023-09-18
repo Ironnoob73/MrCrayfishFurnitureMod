@@ -20,7 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class TileEntityPrinter extends TileEntityFurniture implements ISidedInventory, ITickable
 {
-    private static final int[] slots_top = new int[]{0};
+    private static final int[] slots_top = new int[]{3};
     private static final int[] slots_bottom = new int[]{2, 1};
     private static final int[] slots_sides = new int[]{1};
 
@@ -71,7 +71,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
         {
             --this.printerPrintTime;
         }
-
+//Slot0=Origin    Slot1=Ink    Slot2=Output    Slot3=BlankBook
         if(!this.isPrinting() && (getStackInSlot(1).isEmpty() || getStackInSlot(0).isEmpty()))
         {
             if(!this.isPrinting() && this.printingTime > 0)
@@ -86,9 +86,6 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
             {
                 this.currentItemPrintTime = this.printerPrintTime = getItemPrintTime(getStackInSlot(1));
                 this.totalCookTime = this.getPrintTime(getStackInSlot(0));
-                if (printingTime==0) {//Consume 1 book
-                    getStackInSlot(3).shrink(1);
-                }
 
                 if(this.isPrinting())
                 {
@@ -108,8 +105,15 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
 
             if(this.isPrinting() && this.canPrint())
             {
+                if (this.printingTime==0 && !getStackInSlot(3).isEmpty()){//Consume book when start
+                    getStackInSlot(3).shrink(1);
                     ++this.printingTime;
                     this.totalCookTime = this.getPrintTime(getStackInSlot(0));
+                }
+                else if (this.printingTime>0){
+                    ++this.printingTime;
+                    this.totalCookTime = this.getPrintTime(getStackInSlot(0));
+                }
                 if(!flag)
                 {
                     TileEntityUtil.markBlockForUpdate(world, pos);
@@ -249,7 +253,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return index != 2 && (index != 1 || (isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack)));
+        return index != 2 && (index != 1 || (isItemFuel(stack) ))&& (index != 3 || (isBookPop(stack) ));
     }
 
     @Override
@@ -271,7 +275,7 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
         {
             Item item = stack.getItem();
 
-            if(item != Items.WATER_BUCKET && item != Items.BUCKET)
+            if(item != Items.WATER_BUCKET )
             {
                 return false;
             }
@@ -285,5 +289,24 @@ public class TileEntityPrinter extends TileEntityFurniture implements ISidedInve
     {
         this.fillWithLoot(playerIn);
         return new ContainerPrinter(playerInventory, this);
+    }
+
+    net.minecraftforge.items.IItemHandler handlerTop = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.UP);
+    net.minecraftforge.items.IItemHandler handlerBottom = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.DOWN);
+    net.minecraftforge.items.IItemHandler handlerSide = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.WEST);
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @javax.annotation.Nullable
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @javax.annotation.Nullable net.minecraft.util.EnumFacing facing)
+    {
+        if (facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            if (facing == EnumFacing.DOWN)
+                return (T) handlerBottom;
+            else if (facing == EnumFacing.UP)
+                return (T) handlerTop;
+            else
+                return (T) handlerSide;
+        return super.getCapability(capability, facing);
     }
 }

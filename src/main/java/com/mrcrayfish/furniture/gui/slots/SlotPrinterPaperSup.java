@@ -1,9 +1,11 @@
 package com.mrcrayfish.furniture.gui.slots;
 
 import com.mrcrayfish.furniture.api.RecipeAPI;
+import com.mrcrayfish.furniture.tileentity.TileEntityPrinter;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
 
 public class SlotPrinterPaperSup extends Slot
 {
@@ -15,12 +17,7 @@ public class SlotPrinterPaperSup extends Slot
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return RecipeAPI.getPrinterRecipeFromInput(new ItemStack(stack.getItem())) != null;
+        return TileEntityPrinter.isBookPop(stack) ;
     }
 
-    @Override
-    public int getSlotStackLimit()
-    {
-        return 1;
-    }
 }

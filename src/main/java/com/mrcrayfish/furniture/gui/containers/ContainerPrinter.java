@@ -25,7 +25,7 @@ public class ContainerPrinter extends Container
         this.addSlotToContainer(new SlotPrinterInput(printerInventory, 0, 105, 30));
         this.addSlotToContainer(new Slot(printerInventory, 1, 55, 30));
         this.addSlotToContainer(new SlotPrinter(printerInventory, 2, 80, 61));
-        this.addSlotToContainer(new Slot(printerInventory, 3, 80, 5));//consume book
+        this.addSlotToContainer(new SlotPrinterPaperSup(printerInventory, 3, 80, 5));//consume book
 
         for(int i = 0; i < 3; i++)
         {
