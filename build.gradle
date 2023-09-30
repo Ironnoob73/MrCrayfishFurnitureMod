@@ -19,7 +19,8 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
-
+    //useDependencyAccessTransformers = true
+    //useDepAts = true
     runs {
         client {
             workingDirectory project.file('run')
@@ -48,6 +49,15 @@ repositories {
         url = 'https://maven.blamejared.com'
         name = 'BlameJared Maven'
     }
+    maven {
+        name 'CurseMaven'
+        url 'https://cursemaven.com'
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
 }
 
 dependencies {
@@ -55,6 +65,11 @@ dependencies {
     compileOnly fg.deobf('CraftTweaker2:CraftTweaker2-API:1.12-4.1.20.675')
     compileOnly fg.deobf('CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.675')
     compileOnly fg.deobf('CraftTweaker2:ZenScript:1.12-4.1.20.675')
+    implementation fg.deobf('curse.maven:had-enough-items-557549:4543375')
+    // compile against the JEI API but do not include it at runtime
+    //deobfCompile "mezz.jei:jei_1.12.2:4.16.1.302:api"
+    // at runtime, use the full JEI jar
+    //runtime "mezz.jei:jei_1.12.2:4.16.1.302"
 }
 
 jar {
@@ -86,6 +101,9 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+    /*if (project.use_access_transformer.toBoolean()) {
+        rename '(.+_at.cfg)', 'META-INF/$1' // Make sure Access Transformer files are in META-INF folder
+    }*/
 }
 publishing {
     publications {
@@ -105,3 +123,11 @@ sourceSets {
         java.outputDir = file('build/combined')
     }
 }
+/*if (project.use_access_transformer.toBoolean()) {
+    for (File at : sourceSets.getByName("main").resources.files) {
+        if (at.name.toLowerCase().endsWith("_at.cfg")) {
+            tasks.deobfuscateMergedJarToSrg.accessTransformerFiles.from(at)
+            tasks.srgifyBinpatchedJar.accessTransformerFiles.from(at)
+        }
+    }
+}*/
