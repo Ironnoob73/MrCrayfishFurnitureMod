@@ -32,7 +32,7 @@ public class BlockParkBench extends BlockFurniture
     public BlockParkBench(String id)
     {
         super(Material.WOOD);
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.setHardness(1.0F);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, BlockModernCouch.CouchType.BOTH));

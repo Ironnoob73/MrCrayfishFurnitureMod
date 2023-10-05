@@ -1,4 +1,4 @@
-buildscript {
+/*buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
         mavenCentral()
@@ -6,22 +6,43 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
     }
+}*/
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
+    id 'eclipse'
+    id 'com.gtnewhorizons.retrofuturagradle' version '1.3.16'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
 version = "6.3.2-1.12.2"
 group = "com.mrcrayfish"
 archivesBaseName = "furniture"
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20171003-1.12'
-    //useDependencyAccessTransformers = true
-    //useDepAts = true
-    runs {
+    mcVersion = '1.12.2'
+    mcpMappingChannel = 'stable'
+    mcpMappingVersion = '39'
+    username = 'LD_Anvil'
+    def args = ["-ea:${project.group}"]
+    if (project.use_coremod.toBoolean()) {
+        args << '-Dfml.coreMods.load=' + coremod_plugin_class_name
+    }
+    if (project.use_mixins.toBoolean()) {
+        args << '-Dmixin.hotSwap=true'
+        args << '-Dmixin.checks.interfaces=true'
+        args << '-Dmixin.debug.export=true'
+    }
+    extraRunJvmArguments.addAll(args)
+    useDependencyAccessTransformers = true
+    /*runs {
         client {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -41,35 +62,102 @@ minecraft {
                 }
             }
         }
-    }
+    }*/
 }
-
+tasks.injectTags.configure {
+    // Change Tags class' name here:
+    outputClassName.set("${project.group}.cfm.Tags")
+}
 repositories {
     maven {
         url = 'https://maven.blamejared.com'
         name = 'BlameJared Maven'
     }
     maven {
-        name 'CurseMaven'
-        url 'https://cursemaven.com'
-    }
-    maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
+    maven {
+        name 'progwm\'s Maven' // JEI + Mantle + TCon
+        url 'https://dvs1.progwml6.com/files/maven'
+    }
+    maven {
+        name 'CleanroomMC Maven'
+        url 'https://maven.cleanroommc.com'
+    }
+    maven {
+        name 'SpongePowered Maven'
+        url 'https://repo.spongepowered.org/maven'
+    }
+    maven {
+        name 'CurseMaven'
+        url 'https://cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
+    mavenLocal() // Must be last for caching to work
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
-    compileOnly fg.deobf('CraftTweaker2:CraftTweaker2-API:1.12-4.1.20.675')
-    compileOnly fg.deobf('CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.675')
-    compileOnly fg.deobf('CraftTweaker2:ZenScript:1.12-4.1.20.675')
-    implementation fg.deobf('curse.maven:had-enough-items-557549:4543375')
+    if (project.use_assetmover.toBoolean()) {
+        implementation 'com.cleanroommc:assetmover:2.5'
+    }
+    if (project.use_mixins.toBoolean()) {
+        implementation 'zone.rong:mixinbooter:7.1'
+    }
+    if (project.use_mixins.toBoolean()) {
+        // Change your mixin refmap name here:
+        String mixin = modUtils.enableMixins('org.spongepowered:mixin:0.8.3', "mixins.${project.archives_base_name}.refmap.json")
+        api (mixin) {
+            transitive = false
+        }
+        annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
+        annotationProcessor 'com.google.guava:guava:24.1.1-jre'
+        annotationProcessor 'com.google.code.gson:gson:2.8.6'
+        annotationProcessor (mixin) {
+            transitive = false
+        }
+    }
+    //minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    implementation 'CraftTweaker2:CraftTweaker2-API:1.12-4.1.20.675'
+    implementation 'CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.675'
+    implementation 'CraftTweaker2:ZenScript:1.12-4.1.20.675'
+    //implementation fg.deobf('curse.maven:had-enough-items-557549:4543375')
+    implementation "mezz.jei:jei_1.12.2:4.15.+"
+    //runtime "mezz.jei:jei_1.12.2:4.15.+"
     // compile against the JEI API but do not include it at runtime
     //deobfCompile "mezz.jei:jei_1.12.2:4.16.1.302:api"
     // at runtime, use the full JEI jar
     //runtime "mezz.jei:jei_1.12.2:4.16.1.302"
+}
+
+if (project.use_access_transformer.toBoolean()) {
+    for (File at : sourceSets.getByName("main").resources.files) {
+        if (at.name.toLowerCase().endsWith("_at.cfg")) {
+            tasks.deobfuscateMergedJarToSrg.accessTransformerFiles.from(at)
+            tasks.srgifyBinpatchedJar.accessTransformerFiles.from(at)
+        }
+    }
+}
+processResources {
+    // This will ensure that this task is redone when the versions change
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', project.minecraft.version
+
+    // Replace various properties in mcmod.info and pack.mcmeta if applicable
+    filesMatching(['mcmod.info', 'pack.mcmeta']) { fcd ->
+        // Replace version and mcversion
+        fcd.expand (
+                'version': project.version,
+                'mcversion': project.minecraft.version
+        )
+    }
+
+    if (project.use_access_transformer.toBoolean()) {
+        rename '(.+_at.cfg)', 'META-INF/$1' // Make sure Access Transformer files are in META-INF folder
+    }
 }
 
 jar {
@@ -88,23 +176,6 @@ jar {
 
 jar.finalizedBy('reobfJar')
 
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    inputs.property "version", project.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        expand 'version': project.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-    /*if (project.use_access_transformer.toBoolean()) {
-        rename '(.+_at.cfg)', 'META-INF/$1' // Make sure Access Transformer files are in META-INF folder
-    }*/
-}
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -117,17 +188,44 @@ publishing {
         }
     }
 }
-sourceSets {
+/*sourceSets {
     main {
         output.resourcesDir = file('build/combined')
         java.outputDir = file('build/combined')
     }
-}
-/*if (project.use_access_transformer.toBoolean()) {
-    for (File at : sourceSets.getByName("main").resources.files) {
-        if (at.name.toLowerCase().endsWith("_at.cfg")) {
-            tasks.deobfuscateMergedJarToSrg.accessTransformerFiles.from(at)
-            tasks.srgifyBinpatchedJar.accessTransformerFiles.from(at)
+}*/
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+    project {
+        settings {
+            /*runConfigurations {
+                "1. Run Client"(Gradle) {
+                    taskNames = ["runClient"]
+                }
+                "2. Run Server"(Gradle) {
+                    taskNames = ["runServer"]
+                }
+                "3. Run Obfuscated Client"(Gradle) {
+                    taskNames = ["runObfClient"]
+                }
+                "4. Run Obfuscated Server"(Gradle) {
+                    taskNames = ["runObfServer"]
+                }
+            }*/
+            compiler.javac {
+                afterEvaluate {
+                    javacAdditionalOptions = "-encoding utf8"
+                    moduleJavacAdditionalOptions = [
+                            (project.name + ".main"): tasks.compileJava.options.compilerArgs.collect { '"' + it + '"' }.join(' ')
+                    ]
+                }
+            }
         }
     }
-}*/
+}
+
+tasks.named("processIdeaSettings").configure {
+    dependsOn("injectTags")
+}

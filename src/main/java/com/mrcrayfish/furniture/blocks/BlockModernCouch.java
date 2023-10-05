@@ -52,7 +52,7 @@ public class BlockModernCouch extends BlockFurnitureTile
     public BlockModernCouch()
     {
         super(Material.CLOTH);
-        this.setUnlocalizedName("modern_couch");
+        this.setTranslationKey("modern_couch");
         this.setRegistryName("modern_couch");
         this.setHardness(0.5F);
         this.setSoundType(SoundType.WOOD);

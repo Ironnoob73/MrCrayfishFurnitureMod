@@ -15,6 +15,8 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
@@ -29,7 +31,7 @@ public class BlockTVStand extends BlockFurnitureTile
     public BlockTVStand()
     {
         super(Material.WOOD);
-        this.setUnlocalizedName("tv_stand");
+        this.setTranslationKey("tv_stand");
         this.setRegistryName("tv_stand");
         this.setHardness(0.5F);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.NONE));
@@ -93,7 +95,8 @@ public class BlockTVStand extends BlockFurnitureTile
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

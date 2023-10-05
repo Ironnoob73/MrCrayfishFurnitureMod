@@ -7,6 +7,8 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class BlockModernTable extends BlockTable
     {
         super(Material.WOOD, SoundType.WOOD);
         this.setHardness(1.0F);
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
     }
 
@@ -52,7 +54,8 @@ public class BlockModernTable extends BlockTable
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

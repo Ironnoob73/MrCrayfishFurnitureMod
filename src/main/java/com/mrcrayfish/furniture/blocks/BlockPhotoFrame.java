@@ -25,6 +25,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -40,7 +42,7 @@ public class BlockPhotoFrame extends BlockFurnitureTile
     public BlockPhotoFrame()
     {
         super(Material.WOOD);
-        this.setUnlocalizedName("photo_frame");
+        this.setTranslationKey("photo_frame");
         this.setRegistryName("photo_frame");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
@@ -172,7 +174,8 @@ public class BlockPhotoFrame extends BlockFurnitureTile
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

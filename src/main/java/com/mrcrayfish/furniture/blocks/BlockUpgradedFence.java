@@ -26,7 +26,7 @@ public class BlockUpgradedFence extends BlockFence
     public BlockUpgradedFence(String id)
     {
         super(Material.WOOD, MapColor.WOOD);
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.setCreativeTab(MrCrayfishFurnitureMod.tabFurniture);
         this.setDefaultState(this.blockState.getBaseState().withProperty(POST, false).withProperty(POST_TOP, false).withProperty(NORTH, false).withProperty(EAST, false).withProperty(SOUTH, false).withProperty(WEST, false));

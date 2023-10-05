@@ -238,7 +238,7 @@ public class BlockModernSlidingDoor extends BlockFurniture implements IPowered
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta % 4)).withProperty(TOP, meta / 4 > 0);
+        return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta % 4)).withProperty(TOP, meta / 4 > 0);
     }
 
     @Override
@@ -255,7 +255,7 @@ public class BlockModernSlidingDoor extends BlockFurniture implements IPowered
 
     @Override
     @SideOnly(Side.CLIENT)
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

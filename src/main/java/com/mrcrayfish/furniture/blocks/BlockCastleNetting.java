@@ -12,7 +12,7 @@ public class BlockCastleNetting extends BlockPane
     public BlockCastleNetting()
     {
         super(Material.CLOTH, true);
-        this.setUnlocalizedName("castle_netting");
+        this.setTranslationKey("castle_netting");
         this.setRegistryName("castle_netting");
         this.setCreativeTab(MrCrayfishFurnitureMod.tabFurniture);
     }

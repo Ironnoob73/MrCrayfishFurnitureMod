@@ -31,7 +31,7 @@ public class BlockModernTV extends BlockAbstractTV
     public BlockModernTV()
     {
         super(Material.ANVIL, 22, 12, 4, -0.35);
-        this.setUnlocalizedName("modern_tv");
+        this.setTranslationKey("modern_tv");
         this.setRegistryName("modern_tv");
         this.setHardness(1.0F);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(MOUNTED, false));
@@ -82,7 +82,7 @@ public class BlockModernTV extends BlockAbstractTV
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(MOUNTED, meta / 4 > 0);
+        return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta)).withProperty(MOUNTED, meta / 4 > 0);
     }
 
     @Override

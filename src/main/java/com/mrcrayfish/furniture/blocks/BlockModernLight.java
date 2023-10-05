@@ -37,7 +37,7 @@ public class BlockModernLight extends Block implements IPowered
     public BlockModernLight(String id, boolean powered)
     {
         super(Material.GLASS);
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.setHardness(0.5F);
         if(!powered)
@@ -116,7 +116,7 @@ public class BlockModernLight extends Block implements IPowered
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getFront(meta));
+        return this.getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta));
     }
 
     @Override

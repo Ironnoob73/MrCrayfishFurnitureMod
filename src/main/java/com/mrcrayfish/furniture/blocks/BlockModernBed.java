@@ -52,7 +52,7 @@ public class BlockModernBed extends BlockFurnitureTile
     public BlockModernBed(String id)
     {
         super(Material.WOOD);
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.setHardness(0.5F);
     }
@@ -305,7 +305,7 @@ public class BlockModernBed extends BlockFurnitureTile
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(OCCUPIED, meta > 3);
+        return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta)).withProperty(OCCUPIED, meta > 3);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class BlockModernStair extends BlockFurniture
     {
         super(Material.WOOD);
         this.setHardness(1.0F);
-        this.setUnlocalizedName("modern_stair");
+        this.setTranslationKey("modern_stair");
         this.setRegistryName("modern_stair");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.NONE));
     }

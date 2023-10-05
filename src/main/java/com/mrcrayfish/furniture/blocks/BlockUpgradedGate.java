@@ -34,7 +34,7 @@ public class BlockUpgradedGate extends BlockFurniture
     public BlockUpgradedGate(String id)
     {
         super(Material.WOOD);
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(HINGE, BlockDoor.EnumHingePosition.LEFT).withProperty(OPENED, false);
     }
@@ -112,7 +112,7 @@ public class BlockUpgradedGate extends BlockFurniture
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(OPENED, (meta & 4) != 0).withProperty(HINGE, (meta & 8) == 0 ? BlockDoor.EnumHingePosition.LEFT : BlockDoor.EnumHingePosition.RIGHT);
+        return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta)).withProperty(OPENED, (meta & 4) != 0).withProperty(HINGE, (meta & 8) == 0 ? BlockDoor.EnumHingePosition.LEFT : BlockDoor.EnumHingePosition.RIGHT);
     }
 
     @Override
